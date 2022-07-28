@@ -6,10 +6,196 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <script src="/assets/lib/jquery.js"></script>
+  <script src="/assets/lib/layui/layui.all.js"></script>
+  <!-- 导入 LayUI 的样式 -->
+  <link rel="stylesheet" href="/assets/lib/layui/css/layui.css" />
+  <!-- 导入自己的样式表 -->
+  <link rel="stylesheet" href="/assets/css/login.css" />
 </head>
 
 <body>
 
+
+  <div><img src="/assets/images/logo.png" alt=""></div>
+  <div class="rebbox">
+    <div class="title"></div>
+    <!-- 登录 -->
+    <div class="login">
+      <form class="layui-form" action="" id="form_login">
+        <div class="layui-form-item">
+          <input type="text" name="username" lay-verify="title" autocomplete="off" placeholder="请输入标题"
+            class="layui-input">
+        </div>
+
+        <div class="layui-form-item">
+          <input type="password" name="password" lay-verify="required" lay-reqtext="用户名是必填项，岂能为空？" placeholder="请输入密码"
+            autocomplete="off" class="layui-input">
+        </div>
+
+        <div class="layui-form-item">
+          <button class="layui-btn layui-btn layui-btn-fluid" lay-submit="" lay-filter="demo1" id="sumit">立即提交</button>
+        </div>
+        <div class="layui-form-item">
+          <a href="#" class="tilogin">注册</a>
+        </div>
+      </form>
+
+
+    </div>
+    <!-- 注册 -->
+    <div class="signin">
+      <div class="login">
+        <form class="layui-form" action="" id="form_reg">
+          <div class="layui-form-item">
+            <input type="text" name="username" lay-verify="title" autocomplete="off" placeholder="请输入username"
+              class="layui-input">
+          </div>
+          <div class="layui-form-item">
+            <input type="password" name="password" lay-verify="required" lay-reqtext="用户名是必填项，岂能为空？" placeholder="请输入密码"
+              autocomplete="off" class="layui-input">
+          </div>
+
+          <div class="layui-form-item">
+            <input type="password" name="repassword" lay-verify="required" lay-reqtext="用户名是必填项，岂能为空？"
+              placeholder="请确认密码" autocomplete="off" class="layui-input">
+          </div>
+
+          <div class="layui-form-item">
+            <button type="submit" class="layui-btn layui-btn layui-btn-fluid" lay-submit=""
+              lay-filter="demo1">立即提交1111111111</button>
+          </div>
+          <div class="layui-form-item">
+            <a href="#" class="tosignin">去登录</a>
+          </div>
+        </form>
+
+
+      </div>
+    </div>
+  </div>
+
+
+
+</body>
+
+
+<script>
+  var tilogin = document.querySelector('.tilogin')
+  var tosignin = document.querySelector('.tosignin')
+  var login = document.querySelector('.login')
+  var signin = document.querySelector('.signin')
+
+  var sumit = document.querySelector('#sumit')
+
+
+  tilogin.addEventListener('click', function a() {
+
+    login.style.display = 'none'
+    signin.style.display = 'block'
+    // console.log(e, 'ooooo');
+
+  })
+  var b = tosignin.addEventListener('click', function (e) {
+
+
+    signin.style.display = 'none'
+    login.style.display = 'block'
+
+  })
+  // var form = layui.form; // 获得 form 模块对象
+  // console.log(form);
+  // // 监听注册表单提交事件
+  // sumit.addEventListener('click', function (e) {
+  //   console.log(e);
+  //   e.preventDefault()
+  //   // f发送接
+  //   var data = { username: 'username', password: 'a23456' }
+  //   axios({
+  //     url: 'http://www.liulongbin.top:3007/api/reguser',
+  //     method: 'POST',
+  //     data: data
+  //   }).then(function (response) {
+  //     console.log(data)
+  //   }).catch(function (err) {
+  //     console.log(err)
+  //   });
+
+
+  // })
+  $(function () {
+    // 从 layui 中获取 form 对象
+    var form = layui.form
+    var layer = layui.layer
+
+    // 监听注册表单的提交事件
+    $('#form_reg').on('submit', function (e) {
+      // 1. 阻止默认的提交行为
+      e.preventDefault()
+      // 2. 发起Ajax的POST请求
+      var data = {
+        username: $('#form_reg [name=username]').val(),
+        password: $('#form_reg [name=password]').val()
+      }
+      $.post('/api/reguser', data, function (res) {
+        if (res.status !== 0) {
+          return layer.msg(res.message)
+        }
+        layer.msg('注册成功，请登录！')
+        // 模拟人的点击行为
+        this.tosignin()
+      })
+    })
+
+    // 监听登录表单的提交事件
+    $('#form_login').submit(function (e) {
+      // 阻止默认提交行为
+      e.preventDefault()
+      $.ajax({
+        url: '/api/login',
+        method: 'POST',
+        // 快速获取表单中的数据
+        data: $(this).serialize(),
+        success: function (res) {
+          if (res.status !== 0) {
+            return layer.msg('登录失败！')
+          }
+          layer.msg('登录成功！')
+          console.log(res.token);
+          // 将登录成功得到的 token 字符串，保存到 localStorage 中
+          localStorage.setItem('token', res.token)
+          // 跳转到后台主页
+          // location.href = '/index.html'
+        }
+      })
+    })
+  })
+
+
+
+</script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<!-- 导入 Layui 的JS文件 -->
+<script src="/assets/lib/layui/layui.all.js"></script>
+<!-- 导入 JQuery -->
+<script src="/assets/lib/jquery.js"></script>
+<!-- 导入自己封装的 baseAPI.js -->
+<script src="/assets/js/baseAPI.js"></script>
+<!-- 导入自己的 JavaScript 脚本 -->
+<script src="/assets/js/login.js"></script>
+
+<!-- 导入 Layui 的JS文件
+<script src="/assets/lib/jquery.js"></script>
+<script src="/assets/lib/layui/layui.all.js"></script>
+<script src="/assets/lib/jquery.js"></script>
+<script src="/assets/lib/axios.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+!-- 导入 JQuery -->
+<!-- <script src="/assets/lib/jquery.js"></script> -->
+<!-- 导入自己封装的 baseAPI.js -->
+<!-- <script src="/assets/js/baseAPI.js"></script> -->
+<!-- 导入自己的 JavaScript 脚本 -->
+<!-- <script src="/assets/js/login.js"></script> --> -->
 </body>
 
 </html>
