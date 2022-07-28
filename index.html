@@ -1,15 +1,172 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>layout 管理系统大布局 - Layui</title>
+  <!-- <link rel="stylesheet" href="./layui/css/layui.css"> -->
+  <!-- 导入 layui 的样式表 -->
+  <link rel="stylesheet" href="/assets/lib/layui/css/layui.css" />
+  <!-- 导入第三方图标库 -->
+  <link rel="stylesheet" href="/assets/fonts/iconfont.css" />
+  <!-- 导入自己的样式表 -->
+  <link rel="stylesheet" href="/assets/css/index.css" />
 </head>
 
 <body>
+  <div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+      <div class="layui-logo layui-hide-xs layui-bg-black"><img src="/assets/images/logo.png" alt=""></div>
 
+      <ul class="layui-nav layui-layout-right">
+        <li class="layui-nav-item layui-hide layui-show-md-inline-block">
+          <a href="javascript:;">
+            <img src="//tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg"
+              class="layui-nav-img">
+            <span class="text-avatar">A</span>
+            个人中心
+          </a>
+          <dl class="layui-nav-child">
+            <dd><a href="">Your Profile</a></dd>
+            <dd><a href="">Settings</a></dd>
+            <dd><a href="">Sign out</a></dd>
+          </dl>
+        </li>
+        <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect id="tt">
+          <a href="javascript:;">
+            <i class="iconfont icon-tuichu"></i>
+            退出
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+      <div class="layui-side-scroll">
+        <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+        <ul class="layui-nav layui-nav-tree" lay-shrink="all" lay-filter="test">
+          <div href="javascript:;" class="userinfo">
+            <img src="//tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg"
+              class="layui-nav-img">
+            <span class="text-avatar">A</span>
+            <span id="welcome">欢迎 ***</span>
+          </div>
+          <li class="layui-nav-item"><a href="/home/dashboard.html" target="fm">首页</a></li>
+          <li class="layui-nav-item ">
+            <a class="" href="javascript:;">文章管理</a>
+            <dl class="layui-nav-child">
+              <dd><a href="javascript:;">文章类别 1</a></dd>
+              <dd><a href="javascript:;">文章列表 2</a></dd>
+              <dd><a href="javascript:;">文章发布 3</a></dd>
+
+            </dl>
+          </li>
+          <li class="layui-nav-item">
+            <a href="javascript:;">个人中心</a>
+            <dl class="layui-nav-child">
+              <dd><a href="javascript:;">基本资料 1</a></dd>
+              <dd><a href="javascript:;">更换资料 2</a></dd>
+
+            </dl>
+          </li>
+
+
+        </ul>
+      </div>
+    </div>
+
+    <div class="layui-body">
+      <!-- 内容主体区域 -->
+      <iframe src="/home/dashboard.html" name='fm' frameborder="0"></iframe>
+    </div>
+
+    <div class="layui-footer">
+      <!-- 底部固定区域 -->
+      底部固定区域
+    </div>
+  </div>
+  <!-- <script src="./layui/layui.js"></script> -->
+  <script src="/assets/lib/axios.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+  </script>
+  <!-- 导入 layui 的JS文件 -->
+  <script src="/assets/lib/layui/layui.all.js"></script>
+  <script>
+
+    //获取用户信息接口
+    axios({
+      url: 'http://www.liulongbin.top:3007/my/userinfo',
+      method: 'GET',
+      //添加请求头
+      headers: {
+        Authorization: window.localStorage.getItem('token') || ''
+
+      },
+
+    }).then(function (response) {
+      console.log(response.data)
+
+      //s身份认证之强制跳转到登录页
+      if (response.data.status == 1 || response.data.message === '身份认证失败') {
+        location.href = '/login.html'
+      }
+      renderimg(response.data.data)
+    }).catch(function (err) {
+      // console.log(err)
+
+    });
+    //渲染用户头像
+    function renderimg(user) {
+      // console.log(user);
+      var name = user.nickname || user.username
+      var welcome = document.querySelector('#welcome')
+
+      // console.log(welcome);
+      welcome.innerHTML = '欢迎' + name
+      var img = document.querySelectorAll('.layui-nav-img')
+      var text = document.querySelectorAll('.text-avatar')
+
+      if (user.user_pic !== null) {
+
+        // console.log(text[0], 'ppp');
+        text[0].style.display = 'none';
+        text[1].style.display = 'none';
+        // text.style.display = 'none'
+
+        img[0].src = user.user_pic
+        img[1].src = user.user_pic
+
+        // 渲染图片
+
+
+      } else {
+        // console.log(text[0], 'ppp');
+        console.log(img[0], 'ppp');
+
+        text[0].innerHTML = name.substr(0, 1).toUpperCase();
+        text[1].innerHTML = name.substr(0, 1).toUpperCase();
+        // console.log(text[0], 'ppp');
+        img[0].style.display = 'none';
+        img[1].style.display = 'none';
+      }
+
+
+    }
+    //退出事件
+    var logout = document.getElementById('tt')
+    logout.addEventListener('click', function () {
+      layer.confirm('is not?', { icon: 3, title: '提示' }, function (index) {
+        window.localStorage.removeItem('token')
+        location.href = '/login.html'
+
+        layer.close(index);
+      });
+
+    })
+
+  </script>
 </body>
 
 </html>
