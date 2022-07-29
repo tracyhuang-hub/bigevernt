@@ -28,9 +28,9 @@
             个人中心
           </a>
           <dl class="layui-nav-child">
-            <dd><a href="">Your Profile</a></dd>
-            <dd><a href="">Settings</a></dd>
-            <dd><a href="">Sign out</a></dd>
+            <dd><a href="/home//user/userinfo.html" target="fm">基本资料 1</a></dd>
+            <dd><a href="/home//user/resetimg.html" target="fm">更换头像</a></dd>
+            <dd><a href="/home//user/resetPasswprd.html" target="fm">更换密码</a></dd>
           </dl>
         </li>
         <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect id="tt">
@@ -65,8 +65,9 @@
           <li class="layui-nav-item">
             <a href="javascript:;">个人中心</a>
             <dl class="layui-nav-child">
-              <dd><a href="javascript:;">基本资料 1</a></dd>
-              <dd><a href="javascript:;">更换资料 2</a></dd>
+              <dd><a href="/home//user/userinfo.html" target="fm">基本资料 1</a></dd>
+              <dd><a href="/home//user/resetimg.html" target="fm">更换头像</a></dd>
+              <dd><a href="/home//user/resetPasswprd.html" target="fm">更换密码</a></dd>
 
             </dl>
           </li>
@@ -96,27 +97,32 @@
   <script>
 
     //获取用户信息接口
-    axios({
-      url: 'http://www.liulongbin.top:3007/my/userinfo',
-      method: 'GET',
-      //添加请求头
-      headers: {
-        Authorization: window.localStorage.getItem('token') || ''
+    function gtuserin() {
+      axios({
+        url: 'http://www.liulongbin.top:3007/my/userinfo',
+        method: 'GET',
+        //添加请求头
+        headers: {
+          Authorization: window.localStorage.getItem('token') || ''
 
-      },
+        },
 
-    }).then(function (response) {
-      console.log(response.data)
+      }).then(function (response) {
+        console.log(response.data)
 
-      //s身份认证之强制跳转到登录页
-      if (response.data.status == 1 || response.data.message === '身份认证失败') {
-        location.href = '/login.html'
-      }
-      renderimg(response.data.data)
-    }).catch(function (err) {
-      // console.log(err)
+        //s身份认证之强制跳转到登录页
+        if (response.data.status == 1 || response.data.message === '身份认证失败') {
+          location.href = '/login.html'
+        }
+        renderimg(response.data.data)
+      }).catch(function (err) {
+        // console.log(err)
 
-    });
+      });
+
+    }
+    gtuserin()
+
     //渲染用户头像
     function renderimg(user) {
       // console.log(user);
